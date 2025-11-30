@@ -3,13 +3,18 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+
+// ⭐ YEH IMPORT VERY IMPORTANT HAI
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -18,17 +23,27 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+
       <BrowserRouter>
+
         <Navbar />
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
+
+          {/* ⭐ ADMIN PANEL ROUTE YAHI AAYEGA */}
+          <Route path="/admin" element={<AdminPanel />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
+
         <Footer />
         <WhatsAppButton />
+        
       </BrowserRouter>
+
     </TooltipProvider>
   </QueryClientProvider>
 );
