@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import ServiceCard from "@/components/ServiceCard";
 import heroImage from "@/assets/hero-garage.jpg";
 
-const Home = () => {
-  const handleWhatsAppClick = () => {
-    const phoneNumber = "[PUT WHATSAPP NUMBER HERE WITH COUNTRY CODE]";
-    const message = "Hi, I need help with my car!";
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-  };
+const handleWhatsAppClick = () => {
+  const phoneNumber = "919999067526"; // no +, no spaces
+  const message = "Hi! I need help with my car.";
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+};
+
 
   const quickServices = [
     {
