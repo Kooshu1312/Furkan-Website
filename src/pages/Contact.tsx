@@ -27,48 +27,63 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!formData.name || !formData.phone || !formData.issue) {
       toast.error("Please fill all required fields");
       return;
     }
-
-    // SAVE TO DATABASE
+  
+    // 1) Prepare payload matching backend field names
+    const payload = {
+      name: formData.name,
+      phone: formData.phone,
+      car_model: formData.carModel,        // NOTE: backend expects car_model
+      description: formData.issue,        // NOTE: backend expects description
+      appointment_date: formData.preferredTime.replace("T", " ") + ":00", // NOTE: backend expects appointment_date
+    };
+  
+    // 2) SAVE TO DATABASE (call backend)
     try {
       const response = await fetch("http://localhost:5000/api/book-service", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
-
-      const data = await response.json();
-      console.log("DATABASE RESPONSE:", data);
+  
+      if (!response.ok) {
+        // response returned an error status
+        const errBody = await response.text();
+        console.error("DB RESPONSE ERROR:", response.status, errBody);
+        toast.error("Server error while saving. Check console.");
+      } else {
+        const data = await response.json();
+        console.log("DATABASE RESPONSE:", data);
+      }
     } catch (err) {
       console.error("DATABASE ERROR:", err);
       toast.error("Could not save to database");
     }
-
-    // WHATSAPP SEND
-    const phoneNumber = "919999067526"; // SHOP NUMBER (NO + SIGN)
+  
+    // 3) WHATSAPP SEND (open after saving)
+    const phoneNumber = "919999067526"; // shop number (no + sign)
     const message = `
-🚗 *New Service Request*
-
-*Name:* ${formData.name}
-*Phone:* ${formData.phone}
-*Car Model:* ${formData.carModel || "Not specified"}
-*Issue:* ${formData.issue}
-*Preferred Time:* ${formData.preferredTime || "Not specified"}
+  🚗 *New Service Request*
+  
+  *Name:* ${formData.name}
+  *Phone:* ${formData.phone}
+  *Car Model:* ${formData.carModel || "Not specified"}
+  *Issue:* ${formData.issue}
+  *Preferred Time:* ${formData.preferredTime || "Not specified"}
     `.trim();
-
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message
-    )}`;
-
+  
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  
+    // open WhatsApp in new tab
     window.open(url, "_blank");
-
+  
     toast.success("Request sent successfully!");
-
-    // RESET FORM
+  
+    // 4) RESET FORM
     setFormData({
       name: "",
       phone: "",
@@ -77,6 +92,7 @@ const Contact = () => {
       preferredTime: "",
     });
   };
+  
 
   return (
     <div className="min-h-screen pt-16">
@@ -155,15 +171,16 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="preferredTime">Preferred Time</Label>
-                    <Input
-                      id="preferredTime"
-                      name="preferredTime"
-                      placeholder="Tomorrow morning, evening, etc."
-                      value={formData.preferredTime}
-                      onChange={handleChange}
-                    />
-                  </div>
+  <Label htmlFor="preferredTime">Preferred Time *</Label>
+  <Input
+    id="preferredTime"
+    name="preferredTime"
+    type="datetime-local"
+    value={formData.preferredTime}
+    onChange={handleChange}
+    required
+  />
+</div>
 
                   <Button type="submit" variant="cta" size="lg" className="w-full">
                     Book Service

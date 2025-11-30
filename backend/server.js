@@ -36,9 +36,14 @@ app.post("/api/book-service", (req, res) => {
     [name, phone, car_model, description, appointment_date],
     (err, result) => {
       if (err) {
-        console.log("INSERT ERROR:", err);
-        return res.status(500).json({ message: "DB insert failed" });
+        console.log("INSERT ERROR:", err);  
+        return res.status(500).json({ 
+          message: "DB insert failed",
+          error: err           // ⭐ FULL MySQL error will go to frontend
+        });
       }
+
+      console.log("INSERT SUCCESS, ID:", result.insertId);
       return res.json({ message: "Booking saved" });
     }
   );
