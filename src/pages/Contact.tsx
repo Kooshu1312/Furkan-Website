@@ -16,17 +16,40 @@ const Contact = () => {
     preferredTime: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate form
+
     if (!formData.name || !formData.phone || !formData.issue) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    // Create WhatsApp message
-    const phoneNumber = "[PUT WHATSAPP NUMBER HERE WITH COUNTRY CODE]";
+    // 1️⃣ SAVE TO DATABASE (IMPORTANT)
+    try {
+      const response = await fetch("http://localhost:5000/api/book-service", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      console.log("DB Response:", data);
+    } catch (err) {
+      console.error("DB ERROR:", err);
+      toast.error("Failed to save to database");
+    }
+
+    // 2️⃣ SEND TO WHATSAPP
+    const phoneNumber = "9999067526"; // ← PUT SHOP NUMBER HERE
     const message = `
 🚗 *New Service Request*
 
@@ -37,8 +60,13 @@ const Contact = () => {
 *Preferred Time:* ${formData.preferredTime || "Not specified"}
     `.trim();
 
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+
     window.open(url, "_blank");
+
+    toast.success("Request sent!");
 
     // Reset form
     setFormData({
@@ -48,15 +76,6 @@ const Contact = () => {
       issue: "",
       preferredTime: "",
     });
-
-    toast.success("Opening WhatsApp...");
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
   };
 
   return (
@@ -64,7 +83,9 @@ const Contact = () => {
       {/* Header */}
       <section className="py-16 bg-accent text-accent-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-display text-5xl md:text-6xl font-bold mb-4">Contact Us</h1>
+          <h1 className="text-display text-5xl md:text-6xl font-bold mb-4">
+            Contact Us
+          </h1>
           <p className="text-lg max-w-2xl mx-auto opacity-90">
             Book your service appointment or reach out for any inquiries
           </p>
@@ -78,7 +99,9 @@ const Contact = () => {
             {/* Booking Form */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-display text-2xl">Book a Service</CardTitle>
+                <CardTitle className="text-display text-2xl">
+                  Book a Service
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -143,17 +166,18 @@ const Contact = () => {
                   </div>
 
                   <Button type="submit" variant="cta" size="lg" className="w-full">
-                    Submit via WhatsApp
+                    Book Service
                   </Button>
 
                   <p className="text-sm text-muted-foreground text-center">
-                    Your details will be sent to our WhatsApp for quick response
+                    Your details will be sent to our WhatsApp and saved in our
+                    system.
                   </p>
                 </form>
               </CardContent>
             </Card>
 
-            {/* Contact Information */}
+            {/* Contact Info */}
             <div className="space-y-6">
               <Card>
                 <CardContent className="pt-6">
@@ -162,9 +186,11 @@ const Contact = () => {
                       <Phone className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-display text-xl font-bold mb-2">Call Us</h3>
-                      <a 
-                        href="tel:+91 99990 67526" 
+                      <h3 className="text-display text-xl font-bold mb-2">
+                        Call Us
+                      </h3>
+                      <a
+                        href="tel:+91 99990 67526"
                         className="text-primary hover:underline font-semibold text-lg"
                       >
                         +91 99990 67526
@@ -184,10 +210,10 @@ const Contact = () => {
                       <MapPin className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-display text-xl font-bold mb-2">Visit Us</h3>
-                      <p className="text-muted-foreground">
-                        Mukherjee Nagar
-                      </p>
+                      <h3 className="text-display text-xl font-bold mb-2">
+                        Visit Us
+                      </h3>
+                      <p className="text-muted-foreground">Mukherjee Nagar</p>
                     </div>
                   </div>
                 </CardContent>
@@ -200,7 +226,9 @@ const Contact = () => {
                       <Clock className="w-6 h-6 text-primary-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-display text-xl font-bold mb-2">Shop Hours</h3>
+                      <h3 className="text-display text-xl font-bold mb-2">
+                        Shop Hours
+                      </h3>
                       <div className="space-y-1 text-muted-foreground">
                         <p>Monday - Saturday: 9:00 AM - 7:00 PM</p>
                         <p>Sunday: Closed</p>
@@ -212,12 +240,19 @@ const Contact = () => {
 
               <Card className="bg-primary text-primary-foreground">
                 <CardContent className="pt-6">
-                  <h3 className="text-display text-xl font-bold mb-3">Need Immediate Help?</h3>
+                  <h3 className="text-display text-xl font-bold mb-3">
+                    Need Immediate Help?
+                  </h3>
                   <p className="mb-4">
-                    For emergency breakdowns or urgent repairs, call us directly!
+                    For emergency breakdowns or urgent repairs, call us
+                    directly!
                   </p>
-                  <a href="tel:[PUT PHONE NUMBER HERE]">
-                    <Button variant="ctaOutline" size="lg" className="w-full bg-background hover:bg-background/90 text-foreground">
+                  <a href="tel:+919999067526">
+                    <Button
+                      variant="ctaOutline"
+                      size="lg"
+                      className="w-full bg-background hover:bg-background/90 text-foreground"
+                    >
                       Call Now
                     </Button>
                   </a>
