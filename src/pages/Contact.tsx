@@ -29,11 +29,11 @@ const Contact = () => {
     e.preventDefault();
 
     if (!formData.name || !formData.phone || !formData.issue) {
-      toast.error("Please fill in all required fields");
+      toast.error("Please fill all required fields");
       return;
     }
 
-    // 1️⃣ SAVE TO DATABASE (IMPORTANT)
+    // SAVE TO DATABASE
     try {
       const response = await fetch("http://localhost:5000/api/book-service", {
         method: "POST",
@@ -42,14 +42,14 @@ const Contact = () => {
       });
 
       const data = await response.json();
-      console.log("DB Response:", data);
+      console.log("DATABASE RESPONSE:", data);
     } catch (err) {
-      console.error("DB ERROR:", err);
-      toast.error("Failed to save to database");
+      console.error("DATABASE ERROR:", err);
+      toast.error("Could not save to database");
     }
 
-    // 2️⃣ SEND TO WHATSAPP
-    const phoneNumber = "9999067526"; // ← PUT SHOP NUMBER HERE
+    // WHATSAPP SEND
+    const phoneNumber = "919999067526"; // SHOP NUMBER (NO + SIGN)
     const message = `
 🚗 *New Service Request*
 
@@ -66,9 +66,9 @@ const Contact = () => {
 
     window.open(url, "_blank");
 
-    toast.success("Request sent!");
+    toast.success("Request sent successfully!");
 
-    // Reset form
+    // RESET FORM
     setFormData({
       name: "",
       phone: "",
@@ -87,7 +87,7 @@ const Contact = () => {
             Contact Us
           </h1>
           <p className="text-lg max-w-2xl mx-auto opacity-90">
-            Book your service appointment or reach out for any inquiries
+            Book your service appointment or ask anything
           </p>
         </div>
       </section>
@@ -142,11 +142,11 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="issue">Issue Description *</Label>
+                    <Label htmlFor="issue">Issue *</Label>
                     <Textarea
                       id="issue"
                       name="issue"
-                      placeholder="Describe the problem or service needed"
+                      placeholder="Describe the issue"
                       value={formData.issue}
                       onChange={handleChange}
                       rows={4}
@@ -159,7 +159,7 @@ const Contact = () => {
                     <Input
                       id="preferredTime"
                       name="preferredTime"
-                      placeholder="e.g., Tomorrow morning"
+                      placeholder="Tomorrow morning, evening, etc."
                       value={formData.preferredTime}
                       onChange={handleChange}
                     />
@@ -170,8 +170,7 @@ const Contact = () => {
                   </Button>
 
                   <p className="text-sm text-muted-foreground text-center">
-                    Your details will be sent to our WhatsApp and saved in our
-                    system.
+                    Your details will be saved in our system and sent to WhatsApp.
                   </p>
                 </form>
               </CardContent>
@@ -190,13 +189,13 @@ const Contact = () => {
                         Call Us
                       </h3>
                       <a
-                        href="tel:+91 99990 67526"
+                        href="tel:+919999067526"
                         className="text-primary hover:underline font-semibold text-lg"
                       >
                         +91 99990 67526
                       </a>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Call for immediate assistance
+                        For quick assistance
                       </p>
                     </div>
                   </div>
@@ -230,8 +229,8 @@ const Contact = () => {
                         Shop Hours
                       </h3>
                       <div className="space-y-1 text-muted-foreground">
-                        <p>Monday - Saturday: 9:00 AM - 7:00 PM</p>
-                        <p>Sunday: Closed</p>
+                        <p>Mon - Sat: 9:00 AM - 7:00 PM</p>
+                        <p>Sunday: Open</p>
                       </div>
                     </div>
                   </div>
@@ -241,17 +240,14 @@ const Contact = () => {
               <Card className="bg-primary text-primary-foreground">
                 <CardContent className="pt-6">
                   <h3 className="text-display text-xl font-bold mb-3">
-                    Need Immediate Help?
+                    Emergency Repair?
                   </h3>
-                  <p className="mb-4">
-                    For emergency breakdowns or urgent repairs, call us
-                    directly!
-                  </p>
+                  <p className="mb-4">Call us immediately!</p>
                   <a href="tel:+919999067526">
                     <Button
                       variant="ctaOutline"
                       size="lg"
-                      className="w-full bg-background hover:bg-background/90 text-foreground"
+                      className="w-full bg-background text-foreground"
                     >
                       Call Now
                     </Button>
