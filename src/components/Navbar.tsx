@@ -11,9 +11,10 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Services", path: "/services" },
     { name: "Contact", path: "/contact" },
+    { name: "Admin", path: "/admin" }, // ⭐ ADMIN PAGE ADDED
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-lg">
@@ -42,7 +43,9 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <a href="tel:[PUT PHONE NUMBER HERE]">
+
+            {/* CALL BUTTON */}
+            <a href="tel:9999067526">
               <Button variant="cta" size="default">
                 Call Now
               </Button>
@@ -76,6 +79,8 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+
+            {/* CALL BUTTON MOBILE */}
             <a href="tel:9999067526" className="block">
               <Button variant="cta" size="default" className="w-full">
                 Call Now
