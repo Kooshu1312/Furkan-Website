@@ -65,16 +65,19 @@ const Contact = () => {
     }
   
     // 3) WHATSAPP SEND (open after saving)
-    const phoneNumber = "919999067526"; // shop number (no + sign)
+    const phoneNumber = "+919999067526"; // shop number (no + sign)
     const message = `
-  🚗 *New Service Request*
-  
-  *Name:* ${formData.name}
-  *Phone:* ${formData.phone}
-  *Car Model:* ${formData.carModel || "Not specified"}
-  *Issue:* ${formData.issue}
-  *Preferred Time:* ${formData.preferredTime || "Not specified"}
-    `.trim();
+🚗 *New Service Request (via Website)*
+
+*Name:* ${formData.name}
+*Phone:* ${formData.phone}
+*Car Model:* ${formData.carModel || "Not specified"}
+*Issue:* ${formData.issue}
+*Preferred Time:* ${formData.preferredTime || "Not specified"}
+
+🌐 *Source:* Furkan Automobiles Website
+`.trim();
+
   
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   
